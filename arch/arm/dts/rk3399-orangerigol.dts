@@ -1,0 +1,71 @@
+/dts-v1/;
+	
+/ {
+	compatible = "rockchip,android", "rockchip,rk3399";
+	interrupt-parent = <0x1>;
+	#address-cells = <0x2>;
+	#size-cells = <0x2>;
+	model = "OrangeRigol - hacked Rigol";
+	aliases {
+		serial2 = "/serial@ff1a0000";
+		mmc1 = "/dwmmc@fe320000";
+	};
+
+	dwmmc@fe320000 {
+		compatible = "rockchip,rk3399-dw-mshc", "rockchip,rk3288-dw-mshc";
+		reg = <0x00000000 0xfe320000 0x00000000 0x00004000>;
+		max-frequency = <0x08f0d180>;
+		clocks = <0x00000008 0x000001ce 0x00000008 0x0000004c 0x00000008 0x0000009a 0x00000008 0x0000009b>;
+		clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+		fifo-depth = <0x00000100>;
+		resets = <0x00000008 0x0000007a>;
+		reset-names = "reset";
+		status = "okay";
+		u-boot,dm-pre-reloc;
+		bus-width = <0x00000004>;
+	};
+
+	uart2: serial@ff1a0000 {
+		compatible = "rockchip,rk3399-uart", "snps,dw-apb-uart";
+		reg = <0x00000000 0xff1a0000 0x00000000 0x00000100>;
+		clocks = <0x00000008 0x00000053 0x00000008 0x00000162>;
+		clock-names = "baudclk", "apb_pclk";
+		clock-frequency = <0x016e3600>;
+		reg-shift = <0x2>;
+		reg-io-width = <0x00000004>;
+		pinctrl-names = "default";
+		pinctrl-0 = <0x00000027>;
+		status = "okay";
+		u-boot,dm-pre-reloc;
+	};
+
+	pmu-clock-controller@ff750000 {
+		compatible = "rockchip,rk3399-pmucru";
+		reg = <0x00000000 0xff750000 0x00000000 0x00001000>;
+		rockchip,grf = <0x00000068>;
+		#clock-cells = <0x1>;
+		#reset-cells = <0x1>;
+		assigned-clocks = <0x0000005c 0x00000001>;
+		assigned-clock-rates = <0x284af100>;
+		u-boot,dm-pre-reloc;
+		phandle = <0x0000005c>;
+	};
+	
+	clock-controller@ff760000 {
+		compatible = "rockchip,rk3399-cru";
+		reg = <0x00000000 0xff760000 0x00000000 0x00001000>;
+		rockchip,grf = <0x00000013>;
+		#clock-cells = <0x1>;
+		#reset-cells = <0x1>;
+		assigned-clocks = <0x00000008 0x00000005 0x00000008 0x00000004 0x00000008 0x00000006 0x00000008 0x000000c0 0x00000008 0x000001c0 0x00000008 0x00000140 0x00000008 0x000000c2 0x00000008 0x000001c1 0x00000008 0x00000142 0x00000008 0x000000c9 0x00000008 0x000001c2 0x00000008 0x00000143>;
+		assigned-clock-rates = <0x2367b880 0x2faf0800 0x3b9aca00 0x08f0d180 0x047868c0 0x023c3460 0x05f5e100 0x05f5e100 0x02faf080 0x23c34600 0x05f5e100 0x02faf080>;
+		u-boot,dm-pre-reloc;
+		phandle = <0x00000008>;
+	};
+
+	chosen {
+		stdout-path = "/serial@ff1a0000";
+		u-boot,spl-boot-order = "/dwmmc@fe320000";
+
+	};
+};
